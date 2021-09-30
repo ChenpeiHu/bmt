@@ -1,0 +1,222 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Project 1 Elektronisch product
+Practicum 1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tijdens de practica is er soms ook broncode nodig. Per practicum is er een 
+txt-bestand dat de beoogde folders en bestanden bevat. Het software aandeel 
+zal in de practica minimaal en vooral ondersteunend zijn.
+
+Folder
+Elk practicum heeft zijn eigen folder die op de Pi Zero moet worden 
+aangemaakt. In deze folder kunnen dan de bestanden uit het txt-bestand worden
+geplaatst. De folder kan via Windows Verkenner of via de ssh-prompt worden 
+gemaakt. 
+
+Het getypte commando hiervoor is 'make dir' en vervolgens ga je de folder in 
+met commando 'change directory': 
+$ mkdir practicum1
+$ cd practicum1
+
+Bestanden
+De bestanden moeten zonder wijzigingen in de broncode kunnen worden 
+gecompileerd en uitgevoerd. Wel moet er soms in een opdracht wat parameters 
+in de broncode worden gewijzigd.
+
+Het commando voor het compileren ($ g++ -Wall) en het commando voor het 
+uitvoeren ($ ./opdracht) staan steeds bovenaan de broncode in het cpp-bestand. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hardware 
+* Laptop
+* Raspberry Pi Zero
+* Micro USB-kabel
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Software 
+*	Via ssh-sessie: g++
+*	Via ssh-sessie: nano, pico, vi, ...  
+*	Via drive-mapping: Notepad++, Visual Code, ...
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Folders en bestanden:
+practicum1/opdracht1b.cpp                                          aangeleverd
+practicum1/opdracht3c.cpp                                          aangeleverd
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+opdracht1b.cpp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Practicum 1: opdracht 1b
+//
+// GPIO:  5V 5V  G 14 15 18  G 23  24  G 25 08 07 IDSC  G 12  G 16 20 21
+//       X-------------------------------------------------------------- 
+// Pin :   2  4  6  8 10 12 14 16  18 20 22 24 26   28 30 32 34 36 38 40
+// Pin :   1  3  5  7  9 11 13 15  17 19 21 23 25   27 29 31 33 35 37 39
+//       --------------------------------------------------------------- 
+// GPIO: 3V3 02 03 04  G 17 27 22 3V3 10 09 11  G IDSD 05 06 13 19 26  G
+// Let op: gebruik bij compileren op het eind van de gcc/g++ regel: -lbcm2835
+//
+// PWM0: GPIO 12 & 18   
+// PWM1: GPIO 13 & 19
+// Let op: gebruik '$ sudo ./programma' voor toegang tot de PWM instellingen!
+//
+// g++ -Wall -o opdracht1b opdracht1b.cpp -lbcm2835
+// ./opdracht1b
+
+#include <stdio.h> 
+#include <bcm2835.h> 
+
+// Hardware aansluitingen
+#define PINLED RPI_BPLUS_GPIO_J8_10 // LED + weerstand tussen pinnen 10 & 6 
+
+int main(int nArgc, char* aArgv[]) { 
+
+  // Definieer en initialiseer de lokale variabelen
+    
+  // Toon het nummer en de naam van de opdracht
+  printf("Practicum 1: opdracht 1b\n");
+
+  // Init the bcsm2835 library 
+  if (!bcm2835_init()) { 
+    return 1; 
+  }; 
+
+  // Stel de LED pin in als output
+  bcm2835_gpio_fsel(PINLED, BCM2835_GPIO_FSEL_OUTP); 
+
+  // De teller bepaalt het aantal keer knipperen.
+  for (uint8_t nTeller = 0; nTeller < 5; nTeller++) { 
+
+    // Toon de teller
+    printf("%d ", nTeller); fflush(stdout);
+    
+    // Zet de LED aan en wacht
+    bcm2835_gpio_write(PINLED, HIGH); 
+    bcm2835_delay(200); 
+
+    // Zet de LED uit en wacht
+    bcm2835_gpio_write(PINLED, LOW); 
+    bcm2835_delay(200); 
+  }; 
+
+  // Rond af en sluit de gpio library
+  printf("\n");                                   // Naar nieuwe regel
+  bcm2835_gpio_write(PINLED, LOW);                // Doof de LED
+  bcm2835_close();                                // Sluit de library
+
+  return 0; 
+};
+
+
+
+opdracht3c.cpp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Practicum 1: opdracht 3c
+//
+// GPIO:  5V 5V  G 14 15 18  G 23  24  G 25 08 07 IDSC  G 12  G 16 20 21
+//       X-------------------------------------------------------------- 
+// Pin :   2  4  6  8 10 12 14 16  18 20 22 24 26   28 30 32 34 36 38 40
+// Pin :   1  3  5  7  9 11 13 15  17 19 21 23 25   27 29 31 33 35 37 39
+//       --------------------------------------------------------------- 
+// GPIO: 3V3 02 03 04  G 17 27 22 3V3 10 09 11  G IDSD 05 06 13 19 26  G
+// Let op: gebruik bij compileren op het eind van de gcc/g++ regel: -lbcm2835
+//
+// PWM0: GPIO 12 & 18   
+// PWM1: GPIO 13 & 19
+// Let op: gebruik '$ sudo ./programma' voor toegang tot de PWM instellingen!
+//
+// g++ -Wall -o opdracht3c opdracht3c.cpp -lbcm2835
+// ./opdracht3c
+
+#include <stdio.h> 
+#include <string.h> 
+#include <bcm2835.h> 
+
+// Hardware aansluitingen
+#define PINBTN RPI_BPLUS_GPIO_J8_10 // knop tussen pinnen 10 & 6
+
+int main(int nArgc, char* aArgv[]) { 
+
+  // Definieer en initialiseer de lokale variabelen
+  uint8_t nAantal = 10, nTeller = 1;
+  bool bIngedrukt = false;
+  bool bMetDender = true;
+    
+  // Toon het nummer en de naam van de opdracht
+  printf("Practicum 1: opdracht 3c\n");
+
+  // Met of zonder contactdender tonen?
+  if (nArgc == 2 && strcmp(aArgv[1], "met") == 0) {
+    bMetDender = true;
+    printf("- met -\n");
+  }
+  else {
+    bMetDender = false;
+    printf("- zonder -\n");
+  };
+
+  // Init the bcsm2835 library 
+  if (!bcm2835_init()) { 
+    return 1; 
+  }; 
+
+  // Stel de knop pin in als input en als pullup 
+  bcm2835_gpio_fsel(PINBTN, BCM2835_GPIO_FSEL_INPT); 
+  bcm2835_gpio_set_pud(PINBTN, BCM2835_GPIO_PUD_UP); 
+
+  // Toon het aantal keer dat gedrukt moet worden
+  printf("Druk %d keer: ", nAantal); fflush(stdout);
+
+  // De teller bepaalt het aantal keer knipperen.
+  while (nTeller <= nAantal) { 
+
+    // === Met contactdender
+    if (bMetDender) {
+
+      // Ingedrukt?
+      if (bcm2835_gpio_lev(PINBTN) == LOW) {
+        bIngedrukt = true;
+      };
+
+      // Was ingedrukt en nu losgelaten?
+      if (bIngedrukt && bcm2835_gpio_lev(PINBTN) == HIGH) {
+        bIngedrukt = false;
+
+        // Toon het aantal
+        printf("%d ", nTeller); fflush(stdout);
+        
+        // Weer 1 gehad
+        nTeller++;
+      };
+    };
+
+    // === Zonder contactdender
+    if (!bMetDender) {
+
+      // Ingedrukt?
+      if (bcm2835_gpio_lev(PINBTN) == LOW) {
+        bIngedrukt = true;
+        bcm2835_delay(15);
+      };
+
+      // Was ingedrukt en nu losgelaten?
+      if (bIngedrukt && bcm2835_gpio_lev(PINBTN) == HIGH) {
+        bIngedrukt = false;
+
+        // Toon het aantal
+        printf("%d ", nTeller); fflush(stdout);
+        
+        // Weer 1 gehad
+        nTeller++;
+      };
+    };
+  }; 
+
+  // Rond af en sluit de gpio library
+  printf("\n");                                   // Naar nieuwe regel
+  bcm2835_close();                                // Sluit de library
+
+  return 0; 
+};
