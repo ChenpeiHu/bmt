@@ -1,0 +1,10 @@
+projectnaam toevoegen
+rolverdeling aanvullen
+kopje taakverdeling toevoegen
+beter beschrijven wat we bedoelen bij communicatie
+deadlines:
+-27 september waardeprpositie presentatie geven, 1 dag van tevoren af hebben om te controleren
+-18 oktober inleveren broncode c++, 1 dag van tevoren af hebben
+-1 november demonstratie elektronisch product
+-8 november inleveren broncode c++
+-8 november inleveren testrapport, 1 dag van tevoren af hebben om te controleren
