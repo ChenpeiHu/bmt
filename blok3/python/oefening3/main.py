@@ -49,3 +49,5 @@ import scipy as sp
 vect1 = np.array([3, 1, 1, 5, 5, 1, 18])
 ddrie = vect1 < 4
 print(ddrie)
+
+print(vect1[ddrie])
