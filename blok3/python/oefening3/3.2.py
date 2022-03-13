@@ -9,3 +9,4 @@ import scipy as sp
 # standaarddeviatie = np.std([])
 # en, of, niet = &, |, ~
 
+plt.plot()
