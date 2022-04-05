@@ -27,28 +27,22 @@ print(str(missers.sum()) + " missers")
 totaal = correct_answers_geen_doel.sum() + correct_answers_met_doel.sum() + valse_alarm.sum() + missers.sum()
 print(str(totaal) + " totaal")
 # gemiddelde reactie tijd bij juiste proeven en de standaardafwijking ervan
-print("gemiddelde reactietijd: " + str(np.mean(rt[correct_answers])) + " en standaard deviatie: " + str(
-    np.std(rt[correct_answers])) + " van correcte antwoorden")
+print("gemiddelde reactietijd: " + str(np.mean(rt[correct_answers])) + " en standaard deviatie: " + str(np.std(rt[correct_answers])) + " van correcte antwoorden")
 
 # incorrecte proeven, gemiddelden en standaardafwijkingen
 incorrect_answers = stim != resp
-print("gemiddelde reactietijd: " + str(np.mean(rt[incorrect_answers])) + " en standaard deviatie: " + str(
-    np.std(rt[incorrect_answers])) + " van incorrecte antwoorden")
+print("gemiddelde reactietijd: " + str(np.mean(rt[incorrect_answers])) + " en standaard deviatie: " + str(np.std(rt[incorrect_answers])) + " van incorrecte antwoorden")
 
 proeven_met_doelwit = stim == 1
-print("gemiddelde reactietijd: " + str(np.mean(rt[proeven_met_doelwit])) + " en standaard deviatie: " + str(
-    np.std(rt[proeven_met_doelwit])) + " van proeven met doelwit")
+print("gemiddelde reactietijd: " + str(np.mean(rt[proeven_met_doelwit])) + " en standaard deviatie: " + str(np.std(rt[proeven_met_doelwit])) + " van proeven met doelwit")
 
 proeven_zonder_doelwit = stim == 0
-print("gemiddelde reactietijd: " + str(np.mean(rt[proeven_zonder_doelwit])) + " en standaard deviatie: " + str(
-    np.std(rt[proeven_zonder_doelwit])) + " van proeven zonder doelwit")
+print("gemiddelde reactietijd: " + str(np.mean(rt[proeven_zonder_doelwit])) + " en standaard deviatie: " + str(np.std(rt[proeven_zonder_doelwit])) + " van proeven zonder doelwit")
 
 labels = ["correct", "incorrect", "met doelwit", "zonder doelwit"]
 x_pos = np.arange(len(labels))
-proeven = [np.mean(rt[correct_answers]), np.mean(rt[incorrect_answers]), np.mean(rt[proeven_met_doelwit]),
-        np.mean(rt[proeven_zonder_doelwit])]
-error = [np.std(rt[correct_answers]), np.std(rt[incorrect_answers]), np.std(rt[proeven_met_doelwit]),
-         np.std(rt[proeven_zonder_doelwit])]
+proeven = [np.mean(rt[correct_answers]), np.mean(rt[incorrect_answers]), np.mean(rt[proeven_met_doelwit]), np.mean(rt[proeven_zonder_doelwit])]
+error = [np.std(rt[correct_answers]), np.std(rt[incorrect_answers]), np.std(rt[proeven_met_doelwit]), np.std(rt[proeven_zonder_doelwit])]
 
 fig, ax = plt.subplots()
 ax.bar(x_pos, proeven, yerr=error, align='center', alpha=0.8, ecolor='black', capsize=10)
