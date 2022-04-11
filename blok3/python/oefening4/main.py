@@ -30,6 +30,7 @@ for a in range(len(matches)):
     # load file
     data = np.loadtxt(matches[a], delimiter="\t", skiprows=1)
     correct = data[:, 0] == data[:, 1]
+    print(correct)
     # print(data)
     # print(correct)
     # add column to data matrix
