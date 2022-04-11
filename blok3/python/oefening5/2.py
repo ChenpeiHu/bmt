@@ -15,7 +15,7 @@ outfiles = []
 for root, dirnames, filenames in os.walk(datafold):
     for filename in fnmatch.filter(filenames, "*.txt"):
         matches.append(os.path.join(root, filename))
-        outfiles.append(os.path.join(outfold, root[len(datafold) + 1:], "meting.csv"))
+        outfiles.append(os.path.join(outfold, root[len(datafold) + 1:], filename))
         # get output folder structure
         structure = os.path.join(outfold, root[len(datafold) + 1:])
         # make folder if it does not exist
@@ -65,7 +65,7 @@ for i in range(0, len(rawdata)):
         print(moveData)
 
     if kleiner_dan_max_stilstaan[i]:
-        actie.append("anders")
+        actie.append("stilstaan")
     elif kleiner_dan_max_schuifelen[i]:
         actie.append("schuifelen")
     else:
@@ -98,6 +98,6 @@ ax3.set_title('lopen')
 ax3.set_xlabel('tijd in seconden')
 ax3.set_ylabel('signaal')
 
-plt.savefig(matches[0] + 'my_figure.png')
+plt.savefig(outfold + '/' + filename + '.png')
 plt.tight_layout()
 plt.show()
