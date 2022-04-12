@@ -32,7 +32,7 @@ for a in range(len(matches)):
 
 #SMV berekenen
 data_Xaxis = data_X[0]
-SMV = np.sqrt(np.square(data_Xaxis))  # SMV
+SMV = np.sqrt(np.square(data_Xaxis)) 
 
 rawdata = SMV
 window_size = 50
