@@ -32,33 +32,32 @@ for a in range(len(matches)):
 
 #SMV berekenen
 data_Xaxis = data_X[0]
-SMV = np.sqrt(np.square(data_Xaxis)) 
+SMV = np.sqrt(np.square(data_Xaxis))
 
-rawdata = SMV
 window_size = 50
-meanarray = []
+sliding_average = []
 
 #sliding average berekenen
-for i in range(0, len(rawdata)):
-    currentmean = np.mean(rawdata[i:i + window_size])
-    meanarray.append(currentmean)
+for i in range(0, len(SMV)):
+    currentmean = np.mean(SMV[i:i + window_size])
+    sliding_average.append(currentmean)
 
-max_stilstaan = np.max(meanarray[0:300]) #grenswaarde bepalen maximaal stilstaan
+max_stilstaan = np.max(sliding_average[0:300]) #grenswaarde bepalen maximaal stilstaan
 print("maximale grenswaarde stilstaan: " + str(max_stilstaan))
 
-max_schuifelen = np.max(meanarray[0:1000]) #grenswaarde bepalen maximaal schuifelen
+max_schuifelen = np.max(sliding_average[0:1000]) #grenswaarde bepalen maximaal schuifelen
 print("maximale grenswaarde schuifelen: " + str(max_schuifelen))
 
 # beweging bepalen doormiddel van boolean logica
-kleiner_dan_max_stilstaan = meanarray <= max_stilstaan
-kleiner_dan_max_schuifelen = (meanarray <= max_schuifelen) & (meanarray > max_stilstaan)
-groter_dan_max_schuifelen = meanarray > max_schuifelen
+kleiner_dan_max_stilstaan = sliding_average <= max_stilstaan
+kleiner_dan_max_schuifelen = (sliding_average <= max_schuifelen) & (sliding_average > max_stilstaan)
+groter_dan_max_schuifelen = sliding_average > max_schuifelen
 
 # nieuw bestand maken met extra kolom met beweging
 moveData = []
 actie = []
 
-for i in range(0, len(rawdata)):
+for i in range(0, len(SMV)):
     #bewegingsdata verkrijgen
     if i < 1:
         moveData = np.loadtxt(matches[i], delimiter="\t", skiprows=1)
@@ -77,7 +76,7 @@ np.savetxt(outfiles[0], moveData, "%s", delimiter=",", header="Time (s),X (m/s^2
            comments="")
 
 #sliding average plotten
-plt.plot(times[0], meanarray)
+plt.plot(times[0], sliding_average)
 plt.ylabel("Signaal")
 plt.xlabel("Tijd in seconden")
 plt.title("Sliding Average")
@@ -87,21 +86,21 @@ plt.show()
 f, (ax1, ax2, ax3) = plt.subplots(3, 1)
 
 #stilstaan
-ax1.plot(times[0], meanarray, color='orange')
+ax1.plot(times[0], sliding_average, color='orange')
 ax1.plot(times[0], kleiner_dan_max_stilstaan, color='red')
 ax1.set_title('stilstaan')
 ax1.set_xlabel('Tijd in seconden')
 ax1.set_ylabel('Signaal')
 
 #schuifelen
-ax2.plot(times[0], meanarray, color='orange')
+ax2.plot(times[0], sliding_average, color='orange')
 ax2.plot(times[0], kleiner_dan_max_schuifelen, color='blue')
 ax2.set_title('schuifelen')
 ax2.set_xlabel('Tijd in seconden')
 ax2.set_ylabel('Signaal')
 
 #lopen
-ax3.plot(times[0], meanarray, color='orange')
+ax3.plot(times[0], sliding_average, color='orange')
 ax3.plot(times[0], groter_dan_max_schuifelen, color='green')
 ax3.set_title('lopen')
 ax3.set_xlabel('Tijd in seconden')
